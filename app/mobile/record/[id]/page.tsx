@@ -13,6 +13,7 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [transcription, setTranscription] = useState("");
   const [step, setStep] = useState(0); // 0: idle, 1: recording, 2: analyzing, 3: completed
+  const [isEditing, setIsEditing] = useState(false);
   const [soap, setSoap] = useState({
     subjective: "",
     objective: "",
@@ -20,13 +21,17 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
     plan: ""
   });
 
+  const handleSoapChange = (key: string, value: string) => {
+    setSoap(prev => ({ ...prev, [key]: value }));
+  };
+
   const startRecording = () => {
     setIsRecording(true);
     setStep(1);
     setTranscription("");
     
     // Simulate real-time transcription
-    const text = "病人目前意識清楚，血壓 128/80，SpO2 96%，右手點滴正常，主訴傷口仍有輕微疼痛，已給予止痛藥。";
+    const text = "病人目前意識清楚，血壓 128/80，心跳 92，血氧 96%，右手點滴順暢，無紅腫滲漏，主訴傷口疼痛約三分，已協助調整姿勢並持續觀察。";
     let i = 0;
     const interval = setInterval(() => {
       setTranscription(prev => prev + text.charAt(i));
@@ -92,6 +97,10 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
 
           {step === 1 && (
             <div className="w-full">
+              <div className="flex items-center gap-2 mb-6 bg-red-50 text-red-500 px-3 py-1 rounded-full w-fit mx-auto text-[10px] font-black uppercase tracking-widest">
+                <span className="h-2 w-2 bg-red-500 rounded-full animate-pulse"></span>
+                AI Listening Now
+              </div>
               <div className="flex justify-center mb-8">
                 <div className="relative">
                   <motion.div
@@ -144,16 +153,33 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
 
           {step === 3 && (
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full">
-              <div className="flex items-center gap-2 mb-4 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full w-fit mx-auto text-[10px] font-bold">
-                <CheckCircle2 className="h-3 w-3" />
-                AI 自動生成完成
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[10px] font-bold">
+                  <CheckCircle2 className="h-3 w-3" />
+                  AI 自動生成完成
+                </div>
+                <button 
+                  onClick={() => setIsEditing(!isEditing)}
+                  className="text-[10px] font-black text-medical-primary uppercase flex items-center gap-1 border border-medical-100 px-2 py-1 rounded-lg"
+                >
+                  {isEditing ? "完成編輯" : "編輯紀錄"}
+                </button>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
                 {Object.entries(soap).map(([key, value]) => (
                   <div key={key} className="border-b border-slate-50 pb-2">
                     <span className="text-[10px] font-bold text-slate-400 uppercase">{key}</span>
-                    <p className="text-sm text-slate-800 font-medium">{value}</p>
+                    {isEditing ? (
+                      <textarea
+                        className="w-full text-sm text-slate-800 font-medium bg-slate-50 p-2 rounded-xl border-none focus:ring-1 focus:ring-medical-primary mt-1"
+                        rows={2}
+                        value={value}
+                        onChange={(e) => handleSoapChange(key, e.target.value)}
+                      />
+                    ) : (
+                      <p className="text-sm text-slate-800 font-medium mt-1">{value}</p>
+                    )}
                   </div>
                 ))}
               </div>

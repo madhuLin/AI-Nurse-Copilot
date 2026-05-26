@@ -72,7 +72,7 @@ export default function MobileHome() {
           <PatientCard 
             key={patient.id} 
             patient={patient} 
-            onClick={() => window.location.href = `/mobile/record/${patient.id}`}
+            onClick={() => window.location.href = `/mobile/patient/${patient.id}`}
           />
         ))}
       </div>
