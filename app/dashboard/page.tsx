@@ -2,12 +2,13 @@
 import { mockPatients, mockStats } from "@/lib/mockData";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  LineChart, Line, AreaChart, Area 
+  AreaChart, Area 
 } from 'recharts';
 import { 
   Activity, Users, Clock, Zap, AlertTriangle, TrendingDown, 
   MessageSquare, BrainCircuit, Search, Bell, Settings
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 const chartData = [
   { name: '08:00', records: 12, efficiency: 85 },
@@ -40,7 +41,7 @@ export default function DashboardPage() {
           ].map((item, i) => (
             <button
               key={i}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-colors ${
                 item.active ? "bg-medical-primary text-white shadow-lg shadow-medical-primary/30" : "text-slate-400 hover:bg-slate-50"
               }`}
             >
@@ -80,10 +81,10 @@ export default function DashboardPage() {
               <input 
                 type="text" 
                 placeholder="搜尋病人、病歷號..." 
-                className="pl-12 pr-6 py-3 bg-white border border-slate-100 rounded-2xl text-sm w-64 shadow-sm"
+                className="pl-12 pr-6 py-3 bg-white border border-slate-100 rounded-2xl text-sm w-64 shadow-sm focus:outline-none focus:ring-1 focus:ring-medical-primary"
               />
             </div>
-            <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm relative">
+            <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm relative cursor-pointer">
               <Bell className="h-6 w-6 text-slate-400" />
               <span className="absolute top-3 right-3 h-2 w-2 bg-red-500 rounded-full"></span>
             </div>
@@ -98,13 +99,19 @@ export default function DashboardPage() {
             { label: "節省文書總時數", value: mockStats.timeSaved, icon: Clock, color: "text-amber-500", bg: "bg-amber-50" },
             { label: "異常警告追蹤中", value: mockStats.alertCount, icon: AlertTriangle, color: "text-red-500", bg: "bg-red-50" },
           ].map((stat, i) => (
-            <div key={i} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              key={i} 
+              className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm"
+            >
               <div className={`${stat.bg} ${stat.color} p-3 rounded-2xl w-fit mb-4`}>
                 <stat.icon className="h-6 w-6" />
               </div>
               <p className="text-slate-400 text-sm font-bold mb-1">{stat.label}</p>
               <h3 className="text-3xl font-black text-slate-800">{stat.value}</h3>
-            </div>
+            </motion.div>
           ))}
         </div>
 
@@ -113,7 +120,7 @@ export default function DashboardPage() {
           <div className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
             <div className="flex justify-between items-center mb-8">
               <h3 className="text-xl font-black text-slate-800">AI 效率與紀錄產量趨勢</h3>
-              <select className="bg-slate-50 border-none text-sm font-bold rounded-xl px-4 py-2">
+              <select className="bg-slate-50 border-none text-sm font-bold rounded-xl px-4 py-2 focus:ring-0">
                 <option>今日 (24h)</option>
                 <option>近一週</option>
               </select>
@@ -140,39 +147,50 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Theme 2: Risk Heatmap Placeholder */}
+          {/* Risk & Workload Area */}
           <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
             <h3 className="text-xl font-black text-slate-800 mb-6">全區風險預警圖</h3>
-            <div className="grid grid-cols-4 gap-2 mb-6">
+            <div className="grid grid-cols-4 gap-2 mb-8">
               {[...Array(12)].map((_, i) => {
                 const isHigh = i === 0 || i === 4;
                 const isMedium = i === 2 || i === 8;
                 return (
-                  <div key={i} className={`aspect-square rounded-xl flex flex-col items-center justify-center border ${
+                  <div key={i} className={`aspect-square rounded-xl flex flex-col items-center justify-center border transition-colors ${
                     isHigh ? 'bg-red-50 border-red-100 text-red-600' : 
                     isMedium ? 'bg-amber-50 border-amber-100 text-amber-600' : 
                     'bg-slate-50 border-slate-100 text-slate-300'
                   }`}>
                     <span className="text-[10px] font-black">{i + 1 < 10 ? `0${i+1}` : i+1}</span>
-                    <Activity className={`h-3 w-3 mt-1 ${isHigh ? 'animate-pulse' : ''}`} />
+                    {isHigh ? (
+                      <motion.div
+                        animate={{ opacity: [1, 0.4, 1] }}
+                        transition={{ repeat: Infinity, duration: 2 }}
+                      >
+                        <Activity className="h-3 w-3 mt-1" />
+                      </motion.div>
+                    ) : (
+                      <Activity className="h-3 w-3 mt-1" />
+                    )}
                   </div>
                 );
               })}
             </div>
             
-            <h3 className="text-xl font-black text-slate-800 mb-6">主題 3: 護理負荷分配</h3>
-            <div className="space-y-4">
+            <h3 className="text-xl font-black text-slate-800 mb-6">護理負荷分配</h3>
+            <div className="space-y-5">
                {['陳曉雲', '李大明', '張小美'].map((name, i) => (
                  <div key={i}>
-                    <div className="flex justify-between text-xs font-bold mb-1">
+                    <div className="flex justify-between text-xs font-bold mb-1.5">
                       <span className="text-slate-600">{name}</span>
                       <span className="text-slate-400">{80 - i*15}% 負載</span>
                     </div>
-                    <div className="h-2 w-full bg-slate-50 rounded-full overflow-hidden">
-                      <div 
+                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${80 - i*15}%` }}
+                        transition={{ duration: 1, delay: 0.5 }}
                         className={`h-full rounded-full ${i === 0 ? 'bg-red-500' : 'bg-medical-primary'}`} 
-                        style={{ width: `${80 - i*15}%` }}
-                      ></div>
+                      ></motion.div>
                     </div>
                  </div>
                ))}

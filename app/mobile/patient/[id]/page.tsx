@@ -125,19 +125,6 @@ export default function PatientDetailPage({ params }: { params: { id: string } }
         </section>
       </div>
 
-      {/* Sticky Bottom CTA */}
-      <div className="fixed bottom-24 left-6 right-6 z-40">
-        <Link href={`/mobile/record/${patient.id}`}>
-          <motion.button 
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full bg-medical-primary text-white py-5 rounded-[2rem] font-bold shadow-2xl shadow-medical-primary/40 flex items-center justify-center gap-3"
-          >
-            <Mic className="h-6 w-6" /> 進入語音紀錄工作站
-          </motion.button>
-        </Link>
-      </div>
-
       <BottomNav />
     </div>
   );

@@ -79,7 +79,7 @@ export default function MobileHome() {
       </div>
 
       {/* Patient List */}
-      <div className="px-6 mt-8">
+      <div id="patient-list" className="px-6 mt-8">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-slate-800">今日待理病人 ({filteredPatients.length})</h3>
           <Search className="h-5 w-5 text-slate-400" />
