@@ -140,33 +140,43 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Critical Patients Area */}
+          {/* Theme 2: Risk Heatmap Placeholder */}
           <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-            <h3 className="text-xl font-black text-slate-800 mb-6">高風險病患監控</h3>
-            <div className="space-y-6">
-              {mockPatients.filter(p => p.riskStatus === 'high').map((p, i) => (
-                <div key={i} className="flex items-start gap-4 p-4 rounded-3xl border border-red-50 bg-red-50/20">
-                  <div className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase">
-                    {p.bed}
+            <h3 className="text-xl font-black text-slate-800 mb-6">全區風險預警圖</h3>
+            <div className="grid grid-cols-4 gap-2 mb-6">
+              {[...Array(12)].map((_, i) => {
+                const isHigh = i === 0 || i === 4;
+                const isMedium = i === 2 || i === 8;
+                return (
+                  <div key={i} className={`aspect-square rounded-xl flex flex-col items-center justify-center border ${
+                    isHigh ? 'bg-red-50 border-red-100 text-red-600' : 
+                    isMedium ? 'bg-amber-50 border-amber-100 text-amber-600' : 
+                    'bg-slate-50 border-slate-100 text-slate-300'
+                  }`}>
+                    <span className="text-[10px] font-black">{i + 1 < 10 ? `0${i+1}` : i+1}</span>
+                    <Activity className={`h-3 w-3 mt-1 ${isHigh ? 'animate-pulse' : ''}`} />
                   </div>
-                  <div>
-                    <h4 className="font-bold text-slate-800">{p.name}</h4>
-                    <p className="text-xs text-slate-500 line-clamp-1 mb-2">{p.diagnosis}</p>
-                    <div className="flex gap-3">
-                      {p.vitals.slice(0, 2).map((v, j) => (
-                        <div key={j}>
-                          <p className="text-[8px] font-bold text-slate-400 uppercase">{v.name}</p>
-                          <p className={`text-xs font-bold ${v.status !== 'normal' ? 'text-red-500' : 'text-slate-700'}`}>{v.value}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
-            <button className="w-full mt-8 py-4 border-2 border-slate-50 rounded-3xl text-slate-400 font-bold text-sm hover:bg-slate-50 transition-colors">
-              查看所有病患
-            </button>
+            
+            <h3 className="text-xl font-black text-slate-800 mb-6">主題 3: 護理負荷分配</h3>
+            <div className="space-y-4">
+               {['陳曉雲', '李大明', '張小美'].map((name, i) => (
+                 <div key={i}>
+                    <div className="flex justify-between text-xs font-bold mb-1">
+                      <span className="text-slate-600">{name}</span>
+                      <span className="text-slate-400">{80 - i*15}% 負載</span>
+                    </div>
+                    <div className="h-2 w-full bg-slate-50 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full ${i === 0 ? 'bg-red-500' : 'bg-medical-primary'}`} 
+                        style={{ width: `${80 - i*15}%` }}
+                      ></div>
+                    </div>
+                 </div>
+               ))}
+            </div>
           </div>
         </div>
       </div>

@@ -9,6 +9,8 @@ export const mockPatients: Patient[] = [
     gender: "M",
     diagnosis: "急性心肌梗塞 (AMI)",
     riskStatus: "high",
+    riskScore: 85,
+    workloadPoints: 12,
     category: "ICU",
     vitals: [
       { name: "BP", value: "142/88", unit: "mmHg", status: "warning", trend: "up" },
@@ -25,6 +27,8 @@ export const mockPatients: Patient[] = [
     gender: "F",
     diagnosis: "敗血性休克 (Septic Shock)",
     riskStatus: "high",
+    riskScore: 92,
+    workloadPoints: 15,
     category: "ER",
     vitals: [
       { name: "BP", value: "95/60", unit: "mmHg", status: "critical", trend: "down" },
@@ -41,6 +45,8 @@ export const mockPatients: Patient[] = [
     gender: "M",
     diagnosis: "慢性阻塞性肺病 (COPD)",
     riskStatus: "medium",
+    riskScore: 45,
+    workloadPoints: 8,
     category: "Ward",
     vitals: [
       { name: "BP", value: "128/80", unit: "mmHg", status: "normal", trend: "stable" },

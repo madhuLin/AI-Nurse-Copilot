@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { mockPatients } from "@/lib/mockData";
 import { BottomNav } from "@/components/BottomNav";
 import { VitalCard } from "@/components/VitalCard";
-import { Mic, Square, Sparkles, ChevronLeft, Save, RotateCcw, CheckCircle2 } from "lucide-react";
+import { Mic, Square, Sparkles, ChevronLeft, Save, RotateCcw, CheckCircle2, Truck, BellRing } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
@@ -30,7 +30,6 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
     setStep(1);
     setTranscription("");
     
-    // Simulate real-time transcription
     const text = "病人目前意識清楚，血壓 128/80，心跳 92，血氧 96%，右手點滴順暢，無紅腫滲漏，主訴傷口疼痛約三分，已協助調整姿勢並持續觀察。";
     let i = 0;
     const interval = setInterval(() => {
@@ -45,24 +44,22 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
     setIsAnalyzing(true);
     setStep(2);
 
-    // Simulate AI analysis
     setTimeout(() => {
       setIsAnalyzing(false);
       setStep(3);
       setSoap({
-        subjective: "意識清楚，主訴傷口疼痛。",
-        objective: "BP 128/80, SpO2 96%, 右手點滴滴注順暢。",
-        assessment: "術後狀況尚屬穩定，疼痛控制中。",
-        plan: "持續監測生命徵象，追蹤疼痛緩解情形。"
+        subjective: "意識清楚，主訴傷口疼痛約 3 分。",
+        objective: "BP 128/80, HR 92, SpO2 96%, 右手點滴滴注順暢，無紅腫。",
+        assessment: "術後狀況穩定，疼痛在控制範圍內。",
+        plan: "持續監測生命徵象，追蹤疼痛緩解情形，維持點滴順暢。"
       });
     }, 2500);
   };
 
   return (
     <div className="bg-slate-50 min-h-screen pb-32">
-      {/* Header */}
       <div className="bg-white px-6 pt-12 pb-4 flex items-center justify-between">
-        <Link href="/mobile">
+        <Link href={`/mobile/patient/${patient.id}`}>
           <ChevronLeft className="h-6 w-6 text-slate-400" />
         </Link>
         <div className="text-center">
@@ -73,7 +70,6 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
       </div>
 
       <div className="px-6 mt-4">
-        {/* Vitals Summary */}
         <div className="grid grid-cols-4 gap-2 mb-6">
           {patient.vitals.map((v, i) => (
             <div key={i} className="bg-white p-2 rounded-2xl border border-slate-100 text-center">
@@ -83,7 +79,6 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
           ))}
         </div>
 
-        {/* Recording Area */}
         <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100 flex flex-col items-center justify-center min-h-[350px] relative overflow-hidden">
           {step === 0 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
@@ -137,17 +132,6 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
               </motion.div>
               <h3 className="text-xl font-bold text-slate-800 mb-2">AI 智能分析中</h3>
               <p className="text-sm text-slate-400">正在將語音轉化為結構化 SOAP 紀錄...</p>
-              
-              <div className="mt-8 flex gap-2 justify-center">
-                {[0, 1, 2].map(i => (
-                  <motion.div
-                    key={i}
-                    animate={{ opacity: [0.3, 1, 0.3] }}
-                    transition={{ repeat: Infinity, duration: 1, delay: i * 0.2 }}
-                    className="h-1.5 w-8 bg-medical-primary rounded-full"
-                  />
-                ))}
-              </div>
             </div>
           )}
 
@@ -166,7 +150,7 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
                 </button>
               </div>
               
-              <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+              <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
                 {Object.entries(soap).map(([key, value]) => (
                   <div key={key} className="border-b border-slate-50 pb-2">
                     <span className="text-[10px] font-bold text-slate-400 uppercase">{key}</span>
@@ -183,11 +167,46 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
                   </div>
                 ))}
               </div>
+
+              {/* Theme 4: AI Task Dispatcher Placeholder */}
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mt-6 pt-6 border-t border-slate-100"
+              >
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-3">AI 建議後續行動 (Next Actions)</span>
+                <div className="space-y-2">
+                  <button className="w-full bg-slate-50 hover:bg-medical-50 border border-slate-100 p-3 rounded-2xl flex items-center justify-between group transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-white p-2 rounded-xl shadow-sm text-medical-primary group-hover:scale-110 transition-transform">
+                        <Truck className="h-4 w-4" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-xs font-bold text-slate-700">派送 AGV 機器人</p>
+                        <p className="text-[10px] text-slate-400">提取「送檢體」指令</p>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-bold text-medical-primary bg-medical-50 px-2 py-1 rounded-lg">一鍵派送</span>
+                  </button>
+                  <button className="w-full bg-slate-50 hover:bg-amber-50 border border-slate-100 p-3 rounded-2xl flex items-center justify-between group transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-white p-2 rounded-xl shadow-sm text-amber-500 group-hover:scale-110 transition-transform">
+                        <BellRing className="h-4 w-4" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-xs font-bold text-slate-700">通知值班醫師</p>
+                        <p className="text-[10px] text-slate-400">根據 SOAP 評估異常</p>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-bold text-amber-500 bg-amber-50 px-2 py-1 rounded-lg">發送預警</span>
+                  </button>
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </div>
 
-        {/* Action Buttons */}
         <div className="mt-8 flex justify-center">
           {step === 0 && (
             <button 
@@ -232,7 +251,6 @@ export default function VoiceRecordPage({ params }: { params: { id: string } }) 
           )}
         </div>
       </div>
-
       <BottomNav />
     </div>
   );

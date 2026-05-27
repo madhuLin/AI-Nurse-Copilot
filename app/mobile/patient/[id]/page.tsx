@@ -4,7 +4,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { VitalCard } from "@/components/VitalCard";
 import { 
   ChevronLeft, Mic, History, ClipboardCheck, AlertCircle, 
-  Stethoscope, Thermometer, Droplets, Info, ShieldAlert
+  Stethoscope, Thermometer, Droplets, Info, ShieldAlert, Activity, Gauge
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -37,20 +37,28 @@ export default function PatientDetailPage({ params }: { params: { id: string } }
           </div>
         </div>
 
-        {/* Critical Badges */}
+        {/* Theme 2 & 3: AI Risk & Workload Badges */}
         <div className="flex gap-2 mt-6">
           <div className="flex-1 bg-red-50 border border-red-100 px-3 py-3 rounded-2xl flex items-center gap-2">
-            <ShieldAlert className="h-4 w-4 text-red-500" />
+            <div className="relative h-10 w-10 shrink-0">
+               <svg className="h-full w-full" viewBox="0 0 36 36">
+                 <path className="stroke-red-100 fill-none" strokeWidth="3" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                 <path className="stroke-red-500 fill-none" strokeWidth="3" strokeDasharray={`${patient.riskScore}, 100`} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+               </svg>
+               <span className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-red-600">{patient.riskScore}</span>
+            </div>
             <div>
-              <p className="text-[10px] font-black text-red-400 uppercase leading-none">過敏史</p>
-              <p className="text-xs font-bold text-red-600">Penicillin</p>
+              <p className="text-[10px] font-black text-red-400 uppercase leading-none">風險指數</p>
+              <p className="text-xs font-bold text-red-600">AI 高風險</p>
             </div>
           </div>
-          <div className="flex-1 bg-amber-50 border border-amber-100 px-3 py-3 rounded-2xl flex items-center gap-2">
-            <Info className="h-4 w-4 text-amber-500" />
+          <div className="flex-1 bg-medical-50 border border-medical-100 px-3 py-3 rounded-2xl flex items-center gap-2">
+            <div className="bg-medical-primary/10 p-2 rounded-xl text-medical-primary">
+              <Gauge className="h-5 w-5" />
+            </div>
             <div>
-              <p className="text-[10px] font-black text-amber-400 uppercase leading-none">照護等級</p>
-              <p className="text-xs font-bold text-amber-600">Level 1 (ICU)</p>
+              <p className="text-[10px] font-black text-medical-400 uppercase leading-none">照護負荷</p>
+              <p className="text-xs font-bold text-medical-600">{patient.workloadPoints} 點數</p>
             </div>
           </div>
         </div>
