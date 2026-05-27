@@ -14,6 +14,7 @@ export interface Patient {
   gender: 'M' | 'F';
   diagnosis: string;
   riskStatus: 'low' | 'medium' | 'high';
+  category: 'ICU' | 'ER' | 'Ward';
   vitals: VitalSign[];
 }
 

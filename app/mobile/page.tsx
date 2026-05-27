@@ -4,8 +4,22 @@ import { BottomNav } from "@/components/BottomNav";
 import { mockPatients, mockStats } from "@/lib/mockData";
 import { Bell, Search, Clock, Zap } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function MobileHome() {
+  const [activeTab, setActiveTab] = useState("全部");
+
+  const categories = [
+    { label: "全部", value: "all" },
+    { label: "ICU", value: "ICU" },
+    { label: "急診", value: "ER" },
+    { label: "一般病房", value: "Ward" }
+  ];
+
+  const filteredPatients = activeTab === "全部" 
+    ? mockPatients 
+    : mockPatients.filter(p => p.category === categories.find(c => c.label === activeTab)?.value);
+
   return (
     <div className="bg-slate-50 min-h-screen pb-32">
       {/* Header */}
@@ -24,14 +38,17 @@ export default function MobileHome() {
         </div>
 
         <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-          {["全部", "ICU", "急診", "一般病房"].map((tab, i) => (
+          {categories.map((tab, i) => (
             <button
               key={i}
-              className={`px-6 py-2 rounded-full text-sm font-bold whitespace-nowrap ${
-                i === 0 ? "bg-medical-primary text-white" : "bg-slate-100 text-slate-500"
+              onClick={() => setActiveTab(tab.label)}
+              className={`px-6 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
+                activeTab === tab.label 
+                  ? "bg-medical-primary text-white shadow-lg shadow-medical-primary/30" 
+                  : "bg-slate-100 text-slate-500"
               }`}
             >
-              {tab}
+              {tab.label}
             </button>
           ))}
         </div>
@@ -64,11 +81,11 @@ export default function MobileHome() {
       {/* Patient List */}
       <div className="px-6 mt-8">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold text-slate-800">今日待理病人 ({mockPatients.length})</h3>
+          <h3 className="text-lg font-bold text-slate-800">今日待理病人 ({filteredPatients.length})</h3>
           <Search className="h-5 w-5 text-slate-400" />
         </div>
         
-        {mockPatients.map((patient) => (
+        {filteredPatients.map((patient) => (
           <PatientCard 
             key={patient.id} 
             patient={patient} 
